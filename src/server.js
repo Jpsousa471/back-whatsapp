@@ -43,11 +43,11 @@ io.on('connection', (socket) => {
         }
     })
 
-    socket.on("messageIndividual", (message, userId) => {
+    socket.on("messageIndividual", (messageIndividual, userId) => {
         // verifique se há o chat individual
         if (chats[userId]) {
             // envie a menssagem para o usuário destinado
-            io.to(userId).emit("messageIndividual", message);
+            io.to(userId).emit("messageIndividual", messageIndividual);
         }
     })
 
