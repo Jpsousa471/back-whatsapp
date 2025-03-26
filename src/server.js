@@ -16,9 +16,9 @@ const chats = {}
 
 io.on('connection', (socket) => {
 
-    socket.on('disconnect', () =>{
-
-    })
+    socket.on('disconnect', () => {
+      });
+    
 
     socket.on("join", (name) =>{
         const user = {id: socket.id, name};
@@ -33,24 +33,19 @@ io.on('connection', (socket) => {
         io.emit("message", message);
     })
 
-    socket.on("joinIndividual", (userId) => {
-        //verifique se o destinatáro está conectado
-        const user = users.find((user) => user.id === userId);
-        if (user) {
-            // crie um novo chat individual
-            chats[userId] = {};
-            io.to (userId).emit("joinIndividual", socket.id);
+    socket.on("privateMessage", ({ recipientId, message }) => {
+        if (users[recipientId]) {
+          io.to(recipientId).emit("privateMessage", {
+            sender: users[socket.id],
+            message,
+          });
         }
-    })
+      });
+    
 
-    socket.on("messageIndividual", (messageIndividual, userId) => {
-        // verifique se há o chat individual
-        if (chats[userId]) {
-            // envie a menssagem para o usuário destinado
-            io.to(userId).emit("messageIndividual", messageIndividual);
-        }
-    })
-
+   
 })
 
 server.listen(port, () => console.log(`Server rodando na porta ${port}`))
+
+
